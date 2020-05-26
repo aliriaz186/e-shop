@@ -130,6 +130,14 @@ class LoginController extends Controller
             return redirect(session('link'));
         }
         else{
+            if (auth()->user()->user_type == "customer"){
+                $userId = auth()->user()->id;
+                if (Customer::where('user_id', $userId)->first()['status'] == 0){
+                    $this->guard()->logout();
+                    Auth::logout();
+                    return redirect('users/login')->withErrors(['banned' => true]);
+                }
+            }
             return redirect()->route('dashboard');
         }
     }

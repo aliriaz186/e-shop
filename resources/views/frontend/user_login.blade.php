@@ -45,6 +45,11 @@
                                                                 <i class="text-md la la-lock"></i>
                                                             </span>
                                                         </div>
+                                                            @if($errors->has('banned'))
+                                                            <div class="text-danger mt-2">
+                                                                Your account has been banned!
+                                                            </div>
+                                                            @endif
                                                     </div>
                                                 </div>
                                             </div>

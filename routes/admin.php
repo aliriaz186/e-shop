@@ -48,7 +48,8 @@ Route::group(['prefix' =>'admin', 'middleware' => ['auth', 'admin']], function()
     Route::resource('customers','CustomerController');
 	Route::get('/customers/destroy/{id}', 'CustomerController@destroy')->name('customers.destroy');
     Route::post('/customers/admin_login', 'CustomerController@adminLogin')->name('customers.admin.login');
-    
+    Route::post('/customers/status_update', 'CustomerController@loginStatusUpdate')->name('customers.admin.status_update');
+
 	Route::get('/newsletter', 'NewsletterController@index')->name('newsletters.index');
 	Route::post('/newsletter/send', 'NewsletterController@send')->name('newsletters.send');
 

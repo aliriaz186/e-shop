@@ -47,7 +47,7 @@
                         <td>{{$customer->user->phone}}</td>
                         <td>
                                 <label class="switch">
-                                    <input type="checkbox" onchange="updateSettings">
+                                    <input type="checkbox" onchange="updateCustomerStatus({{$customer->id}})" {{$customer->status == 1 ? 'checked' : ''}}>
                                     <span class="slider round"></span>
                                 </label>
                             </td>
@@ -86,6 +86,15 @@
             $.post('{{ route('customers.admin.login') }}',{_token:'{{ @csrf_token() }}', id:userId}, function(data){
                 if (data){
                     document.getElementById('customers-dashboard-link').click();
+                }
+            });
+        }
+
+        function updateCustomerStatus(userId) {
+            $.post('{{ route('customers.admin.status_update') }}',{_token:'{{ @csrf_token() }}', id:userId}, function(data){
+                var res = JSON.parse(data);
+                if (res.status){
+                    window.location.reload();
                 }
             });
         }

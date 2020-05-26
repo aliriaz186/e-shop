@@ -117,4 +117,14 @@ class CustomerController extends Controller
         Session::put('adminAccessed', $adminId);
         return json_encode(true);
     }
+
+    public function loginStatusUpdate(Request $request){
+       $customer = Customer::where('id', $request->id)->first();
+       if ($customer->status == 1){
+           $customer->status = 0;
+       }else{
+           $customer->status = 1;
+       }
+        return json_encode(['status' => $customer->update()]);
+    }
 }

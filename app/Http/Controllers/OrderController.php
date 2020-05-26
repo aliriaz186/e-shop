@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\RefundRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\OTPVerificationController;
 use App\Order;
@@ -450,5 +451,21 @@ class OrderController extends Controller
             }
         }
         return 1;
+    }
+
+    public function sellerRefund(Request $request){
+        if (empty($request->amount)){
+            $request->amount = 0;
+        }
+        $order = new RefundRequest();
+        $order->order_id = $request->order_id;
+        $order->amount = $request->amount;
+        $order->refund_type = $request->refund_request;
+        if($order->save()){
+            flash(__('successfully'))->success();
+            return redirect()->route('orders.index');
+        }
+        flash(__('Something went wrong'))->error();
+        return back();
     }
 }

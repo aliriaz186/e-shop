@@ -17,6 +17,9 @@ class PurchaseHistoryController extends Controller
     public function index()
     {
         $orders = Order::where('user_id', Auth::user()->id)->orderBy('code', 'desc')->paginate(9);
+        foreach ($orders as $order){
+            $order->detail = OrderDetail::where('order_id', $order->id)->first();
+        }
         return view('frontend.purchase_history', compact('orders'));
     }
 
@@ -94,4 +97,67 @@ class PurchaseHistoryController extends Controller
     {
         //
     }
+
+    public function returnProduct(Request $request)
+    {
+        $order_details = OrderDetail::findOrFail($request->order_id);
+        $order_details->delivery_status = $request->status;
+        $order_details->return_request= $request->return_request;
+        $order_details->return_reason = $request->return_reason;
+        if($order_details->update()){
+            flash(__('successfully'))->success();
+            return redirect()->route('purchase_history.index');
+        }
+        flash(__('Something went wrong'))->error();
+        return back();
+    }
+
+    public function cancel(Request $request)
+    {
+        $order_details = OrderDetail::findOrFail($request->order_id);
+        $order_details->cancellation_request = $request->cancellation_request;
+        $order_details->delivery_status = $request->status;
+        if($order_details->update()){
+            flash(__('successfully'))->success();
+            return redirect()->route('purchase_history.index');
+        }
+        flash(__('Something went wrong'))->error();
+        return back();
+    }
+
+    public function refundRequest(Request $request)
+    {
+        $order_details = OrderDetail::findOrFail($request->order_id);
+        $order_details->refund_request = $request->refund_request;
+        $order_details->delivery_status = $request->status;
+        if($order_details->update()){
+            flash(__('successfully'))->success();
+            return redirect()->route('purchase_history.index');
+        }
+        flash(__('Something went wrong'))->error();
+        return back();
+    }
+
+    public function return_request()
+    {
+        $orders = OrderDetail::leftJoin('orders', function($join) {
+            $join->on('orders.id', '=', 'order_details.order_id');
+        })->where('order_details.seller_id', Auth::user()->id)
+            ->where('order_details.return_request', '!=', '0')
+            ->orderBy('orders.created_at', 'desc')->paginate(9);
+        return view('frontend.return_request', compact('orders'));
+    }
+
+    public function cancellation_request()
+    {
+        //
+        $orders = OrderDetail::leftJoin('orders', function($join) {
+            $join->on('orders.id', '=', 'order_details.order_id');
+        })->where('order_details.seller_id', Auth::user()->id)
+            ->where('order_details.cancellation_request', '!=', '')
+            ->orderBy('orders.created_at', 'desc')->paginate(9);
+        return view('frontend.cancellation_request', compact('orders'));
+    }
+
+
 }
