@@ -81,7 +81,30 @@
                         </span>
                     </a>
                 </li>
-
+                <li>
+                    <a href="{{route('orders.cancellation_requests')}}" class="{{ areActiveRoutesHome(['orders.cancellation_requests'])}}">
+                        <i class="la la-trash"></i>
+                        <span class="category-name">
+                            {{__('Cancellation Requests')}}
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{route('orders.return_requests')}}" class="{{ areActiveRoutesHome(['orders.return_requests'])}}">
+                        <i class="la la-backward"></i>
+                        <span class="category-name">
+                            {{__('Return Requests')}}
+                        </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{route('orders.refund_requests')}}" class="{{ areActiveRoutesHome(['orders.refund_requests'])}}">
+                        <i class="la la-money"></i>
+                        <span class="category-name">
+                            {{__('Refund Requests')}}
+                        </span>
+                    </a>
+                </li>
                 @if ($refund_request_addon != null && $refund_request_addon->activated == 1)
                     <li>
                         <a href="{{ route('vendor_refund_request') }}" class="{{ areActiveRoutesHome(['vendor_refund_request'])}}">

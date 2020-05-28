@@ -167,11 +167,18 @@ Route::group(['middleware' => ['auth']], function(){
     Route::get('invoice/seller/{order_id}', 'InvoiceController@seller_invoice_download')->name('seller.invoice.download');
 
     Route::resource('orders','OrderController');
+    Route::get('/cancellation_requests', 'RequestsController@cancellationRequests')->name('orders.cancellation_requests');
+    Route::get('/return_requests', 'RequestsController@returnRequests')->name('orders.return_requests');
+    Route::get('/refund_requests', 'RequestsController@refundRequests')->name('orders.refund_requests');
+    Route::post('/seller_approved_cancel', 'RequestsController@approvedCancelBySeller')->name('orders.seller_approved_cancel');
+    Route::post('/seller_refund_request', 'RequestsController@sellerRefundRequest')->name('orders.seller_refund_request');
+    Route::post('/orders/seller_cancel', 'RequestsController@cancelledBySeller')->name('orders.seller_cancel');
+    Route::post('/orders/seller_return', 'RequestsController@sellerReturn')->name('orders.seller_return');
     Route::get('/orders/destroy/{id}', 'OrderController@destroy')->name('orders.destroy');
     Route::post('/orders/details', 'OrderController@order_details')->name('orders.details');
     Route::post('/orders/update_delivery_status', 'OrderController@update_delivery_status')->name('orders.update_delivery_status');
     Route::post('/orders/update_payment_status', 'OrderController@update_payment_status')->name('orders.update_payment_status');
-    Route::post('/orders/seller_refund', 'OrderController@sellerRefund')->name('orders.seller_refund');
+//    Route::post('/orders/seller_refund', 'OrderController@sellerRefund')->name('orders.seller_refund');
 
     Route::resource('/reviews', 'ReviewController');
 

@@ -16,7 +16,7 @@
                             <div class="row align-items-center">
                                 <div class="col-md-6">
                                     <h2 class="heading heading-6 text-capitalize strong-600 mb-0">
-                                        {{__('Orders')}}
+                                        {{__('Refund Requests')}}
                                     </h2>
                                 </div>
                                 <div class="col-md-6">
@@ -24,7 +24,7 @@
                                         <ul class="breadcrumb">
                                             <li><a href="{{ route('home') }}">{{__('Home')}}</a></li>
                                             <li><a href="{{ route('dashboard') }}">{{__('Dashboard')}}</a></li>
-                                            <li class="active"><a href="{{ route('orders.index') }}">{{__('Orders')}}</a></li>
+                                            <li class="active"><a href="{{ route('orders.refund_requests') }}">{{__('Refund Requests')}}</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -45,7 +45,7 @@
                                             <th>{{__('Amount')}}</th>
                                             <th>{{__('Delivery Status')}}</th>
                                             <th>{{__('Payment Status')}}</th>
-                                            <th>{{__('Options')}}</th>
+                                            <th style="width: 20%">{{__('Options')}}</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -90,23 +90,13 @@
                                                             </span>
                                                     </td>
                                                     <td>
-                                                        <div class="dropdown">
-                                                            <button class="btn" type="button" id="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                <i class="fa fa-ellipsis-v"></i>
-                                                            </button>
-
-                                                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
-                                                                <button onclick="show_order_details({{ $order->id }})" class="dropdown-item">{{__('Order Details')}}</button>
-                                                                <button onclick="show_chat_modal({{ $order->id }})" class="dropdown-item">{{__('Contact Buyer')}}</button>
-                                                                <button onclick="show_chat_modal({{ $order->links }})" class="dropdown-item">{{__('Request Feedback')}}</button>
-                                                                @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status == 'pending' || $order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status == 'review')
-                                                                <button data-toggle="modal" data-target="#cancelRequest" class="dropdown-item" onclick="cancelOrderBySeller({{$order->id}})">{{__('Cancel Order')}}</button>
-                                                                @endif
-                                                                <button data-toggle="modal" data-target="#refundOrderRequest" onclick="refundOrderApproveModal({{$order->id}})" class="dropdown-item">{{__('Refund Order')}}</button>
-                                                                    <button onclick="show_chat_modal({{ $order->id }})" class="dropdown-item">{{__('Ship Order')}}</button>
-                                                                <a href="{{ route('seller.invoice.download', $order->id) }}" class="dropdown-item">{{__('Download Invoice')}}</a>
-                                                            </div>
-                                                        </div>
+                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == 0 || $order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == '0')
+                                                            <button class="btn btn-success btn-sm" onclick="refundOrderApproveModal({{$order->id}})" data-toggle="modal" data-target="#refundOrderRequest">Accept</button>
+                                                            <button class="btn btn-danger btn-sm ml-2" onclick="refundOrderRejectModal({{$order->id}})" data-toggle="modal" data-target="#refundOrderRequest">Reject</button>
+                                                        @endif
+                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == 1 || $order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == '1')
+                                                            <div style="background: green; padding: 5px; border-radius: 5px; color: white; width: 75px;">Approved</div>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endif
@@ -119,7 +109,7 @@
 
                         <div class="pagination-wrapper py-4">
                             <ul class="pagination justify-content-end">
-                                {{ $orders->links() }}
+                                {{--                                {{ $orders->links() }}--}}
                             </ul>
                         </div>
                     </div>
@@ -127,43 +117,7 @@
             </div>
         </div>
     </section>
-    <div class="modal fade" id="cancelRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <form method="post" action="{{route('orders.seller_approved_cancel')}}" id="cancel-order-form">
-                @csrf
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Order Cancellation</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <label for="exampleFormControlTextarea1">Reason for Cancellation *</label>
-                        <div class="form-group">
-                            <select class="form-control" required name="cancellation_request" id="cancellationrequest">
-                                <option value="0">--please select--</option>
-                                <option value="duplicate-order">Duplicate Order</option>
-                                <option value="order-mistake">Ordered By Mistake</option>
-                                <option value="no-longer">No Longer Needed</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div class="text-danger" id="cancellationrequestError" style="display: none">
-                            Please select reason!
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="hidden" name="order_id" id="can-modal-order-id">
-                        <input type="hidden" name="status" value="cancelled">
-                        <input type="hidden" name="incomming" value="orders.index">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+
     <div class="modal fade" id="refundOrderRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -199,7 +153,7 @@
                     </div>
                     <div class="modal-footer">
                         <input type="hidden" name="order_id" id="refund-modal-order-id">
-                        <input type="hidden" name="incomming" value="orders.index">
+                        <input type="hidden" name="incomming" value="orders.refund_requests">
                         <input type="hidden" name="type" id="refund-type-id">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Continue</button>
@@ -223,39 +177,19 @@
             </div>
         </div>
     </div>
-<script>
-    function cancelOrderBySeller(id) {
-        document.getElementById('can-modal-order-id').value = id;
-    }
-    $('#cancel-order-form').submit(function(){
-        document.getElementById('cancellationrequestError').style.display = "none";
-        if (document.getElementById('cancellationrequest').value === "0" ||document.getElementById('cancellationrequest').value === 0 || document.getElementById('cancellationrequest').value === '') {
-            document.getElementById('cancellationrequestError').style.display = "inline";
-            return false;
+    <script>
+        function refundOrderApproveModal(id) {
+            document.getElementById('refund-modal-order-id').value = id;
+            document.getElementById('refund-type-id').value = "approve";
+            document.getElementById('refund-type').innerHTML = "";
+            document.getElementById('isApproveType').style.display = 'inline';
         }
-    });
-    function refundOrderModal(id) {
-        console.log(document.getElementById('refundAmount').value);
-        document.getElementById('refund-modal-order-id').value = id;
-    }
-    $('#refund-order-form').submit(function(){
-        document.getElementById('refundrequestError').style.display = "none";
-        document.getElementById('refundrequestAmountError').style.display = "none";
-        if (document.getElementById('refundrequest').value === "0" ||document.getElementById('returnrequest').value === 0 || document.getElementById('returnrequest').value === '') {
-            document.getElementById('refundrequestError').style.display = "inline";
-            return false;
+
+        function refundOrderRejectModal(id) {
+            document.getElementById('refund-modal-order-id').value = id;
+            document.getElementById('refund-type-id').value = "reject";
+            document.getElementById('refund-type').innerHTML = "Are you sure you want to reject the request?"
+
         }
-        console.log(document.getElementById('refundAmount').value);
-        if (document.getElementById('refundAmount').value === "" || document.getElementById('refundAmount').value === '' || document.getElementById('refundAmount').value === undefined || document.getElementById('refundAmount').value === 'undefined') {
-            document.getElementById('refundrequestAmountError').style.display = "inline";
-            return false;
-        }
-    });
-    function refundOrderApproveModal(id) {
-        document.getElementById('refund-modal-order-id').value = id;
-        document.getElementById('refund-type-id').value = "approve";
-        document.getElementById('refund-type').innerHTML = "";
-        document.getElementById('isApproveType').style.display = 'inline';
-    }
-</script>
+    </script>
 @endsection

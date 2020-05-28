@@ -101,7 +101,6 @@ class PurchaseHistoryController extends Controller
     public function returnProduct(Request $request)
     {
         $order_details = OrderDetail::findOrFail($request->order_id);
-        $order_details->delivery_status = $request->status;
         $order_details->return_request= $request->return_request;
         $order_details->return_reason = $request->return_reason;
         if($order_details->update()){
@@ -116,7 +115,6 @@ class PurchaseHistoryController extends Controller
     {
         $order_details = OrderDetail::findOrFail($request->order_id);
         $order_details->cancellation_request = $request->cancellation_request;
-        $order_details->delivery_status = $request->status;
         if($order_details->update()){
             flash(__('successfully'))->success();
             return redirect()->route('purchase_history.index');
@@ -129,7 +127,6 @@ class PurchaseHistoryController extends Controller
     {
         $order_details = OrderDetail::findOrFail($request->order_id);
         $order_details->refund_request = $request->refund_request;
-        $order_details->delivery_status = $request->status;
         if($order_details->update()){
             flash(__('successfully'))->success();
             return redirect()->route('purchase_history.index');

@@ -42,7 +42,6 @@ class OrderController extends Controller
             $order->viewed = 1;
             $order->save();
         }
-
         return view('frontend.seller.orders', compact('orders'));
     }
 
@@ -457,6 +456,9 @@ class OrderController extends Controller
         if (empty($request->amount)){
             $request->amount = 0;
         }
+        $orderDetail = OrderDetail::where('order_id', $request->order_id)->first();
+        $orderDetail->delivery_status = 'refund requested';
+        $orderDetail->update();
         $order = new RefundRequest();
         $order->order_id = $request->order_id;
         $order->amount = $request->amount;
