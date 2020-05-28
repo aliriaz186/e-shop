@@ -268,6 +268,24 @@
                         @php
                             $conversation = \App\Conversation::where('receiver_id', Auth::user()->id)->where('receiver_viewed', '1')->get();
                         @endphp
+                        <li class="{{ areActiveRoutes(['admin.cancellation_requests'])}}">
+                            <a class="nav-link" href="{{ route('admin.cancellation_requests') }}">
+                                <i class="fa fa-trash"></i>
+                                <span class="menu-title">{{__('Cancellation Requests')}}</span>
+                            </a>
+                        </li>
+                        <li class="{{ areActiveRoutes(['admin.return_requests'])}}">
+                            <a class="nav-link" href="{{ route('admin.return_requests') }}">
+                                <i class="fa fa-backward"></i>
+                                <span class="menu-title">{{__('Return Requests')}}</span>
+                            </a>
+                        </li>
+                        <li class="{{ areActiveRoutes(['admin.refund_requests'])}}">
+                            <a class="nav-link" href="{{ route('admin.refund_requests') }}">
+                                <i class="fa fa-money"></i>
+                                <span class="menu-title">{{__('Refund Requests')}}</span>
+                            </a>
+                        </li>
                         <li class="{{ areActiveRoutes(['conversations.admin_index', 'conversations.admin_show'])}}">
                             <a class="nav-link" href="{{ route('conversations.admin_index') }}">
                                 <i class="fa fa-comment"></i>
