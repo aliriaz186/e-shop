@@ -83,7 +83,7 @@
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
                                                             <button onclick="show_purchase_history_details({{ $order->id }})" class="dropdown-item">{{__('Order Details')}}</button>
-                                                            <button onclick="show_chat_modal({{ $order->code }})" class="dropdown-item">{{__('Contact Seller')}}</button>
+                                                            <button data-toggle="modal" data-target="#chatModal" onclick="show_chat_modal({{ $order->id }})" class="dropdown-item">{{__('Contact Seller')}}</button>
                                                             @if($order->detail->delivery_status == 'pending' || $order->detail->delivery_status == 'review')
                                                             <button data-toggle="modal" data-target="#cancelRequest" class="dropdown-item" onclick="cancelOrderModal({{$order->id}})">{{__('Cancel Order')}}</button>
                                                              @endif
@@ -94,8 +94,8 @@
                                                             <button class="dropdown-item" data-toggle="modal" data-target="#refundRequest" onclick="refundOrderModal({{$order->id}})">{{__('Refund Request')}}</button>
                                                             @endif
                                                             <button onclick="show_chat_modal({{ $order->id }})" class="dropdown-item">{{__('Dispute')}}</button>
-                                                            <button onclick="show_chat_modal({{ $order->id }})" class="dropdown-item">{{__('Leave Product Review')}}</button>
-                                                            <button data-toggle="modal" data-target="#sellerFeedback" class="dropdown-item">{{__('Leave Seller Feedback')}}</button>
+                                                            <button data-toggle="modal" data-target="#productFeedback"  class="dropdown-item" onclick="product_feedback({{$order->id}})">{{__('Leave Product Review')}}</button>
+                                                            <button data-toggle="modal" data-target="#sellerFeedback" class="dropdown-item" onclick="seller_feedback({{$order->id}})">{{__('Leave Seller Feedback')}}</button>
 
                                                             <a href="{{ route('customer.invoice.download', $order->id) }}" class="dropdown-item">{{__('Download Invoice')}}</a>
                                                         </div>
@@ -259,25 +259,55 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                <form method="post" action="{{route('purchase_history.seller_feedback')}}" id="refund-order-form">
+                    @csrf
                 <div class="modal-body">
-                    <form method="post" action="#">
                         <div class="form-group">
-                            <select class="form-control" required>
-                                <option value="1">  Leave Seller Feedback  </option>
-                            </select>
                             <div class="form-group">
+                                <input type="hidden" id="order-id-feedback" name="order_id">
                                 <label for="exampleFormControlTextarea1"></label>
                                 <textarea class="form-control" name="message" rows="4" placeholder="{{__('Enter Seller Review & Feedback')}}"></textarea>
                             </div>
-                    </form>
+                        </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
+    <div class="modal fade" id="productFeedback" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Leave Product Feedback</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" action="{{route('purchase_history.product_feedback')}}" id="refund-order-form">
+                    @csrf
+                <div class="modal-body">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <input type="hidden" id="order-id-pro-feedback" name="order_id">
+                                <label for="exampleFormControlTextarea1"></label>
+                                <textarea class="form-control" name="message" rows="4" placeholder="{{__('Enter Product Review & Feedback')}}"></textarea>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
 
     <div class="modal fade" id="order_details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-zoom product-modal" id="modal-size" role="document">
@@ -292,9 +322,47 @@
         </div>
     </div>
 
+    <div class="modal" id="chatModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-zoom product-modal" id="modal-size" role="document">
+            <div class="modal-content position-relative">
+                <div class="modal-header">
+                    <h5 class="modal-title strong-600 heading-5">{{__('Contact Seller')}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form class="" action="{{ route('conversations.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-body gry-bg px-3 pt-3">
+                        <div class="form-group">
+                            <input type="text" class="form-control mb-3" name="title" placeholder="Order Id" id="product-code-con" required readonly>
+                        </div>
+                        <div class="form-group">
+                            <textarea class="form-control" rows="8" name="message" required placeholder="Your Question"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-dismiss="modal">{{__('Cancel')}}</button>
+                        <button type="submit" class="btn btn-base-1 btn-styled">{{__('Send')}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 @section('script')
     <script type="text/javascript">
+        function show_chat_modal(code){
+            document.getElementById("product-code-con").value = code;
+        }
+
+        function seller_feedback(id){
+             document.getElementById("order-id-feedback").value = id;
+        }
+        function product_feedback(id){
+             document.getElementById("order-id-pro-feedback").value = id;
+        }
         $('#order_details').on('hidden.bs.modal', function () {
             location.reload();
         })

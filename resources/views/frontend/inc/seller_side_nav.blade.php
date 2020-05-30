@@ -86,6 +86,9 @@
                         <i class="la la-trash"></i>
                         <span class="category-name">
                             {{__('Cancellation Requests')}}
+                            @if (\App\RequestsNotification::where(['type' => 'cancel', 'seller_id' => Auth::user()->id])->exists())
+                                <span class="ml-2" style="color:green"><strong>({{ \App\RequestsNotification::where(['type' => 'cancel', 'seller_id' => Auth::user()->id])->count() }})</strong></span>
+                            @endif
                         </span>
                     </a>
                 </li>
@@ -94,6 +97,9 @@
                         <i class="la la-backward"></i>
                         <span class="category-name">
                             {{__('Return Requests')}}
+                            @if (\App\RequestsNotification::where(['type' => 'return', 'seller_id' => Auth::user()->id])->exists())
+                                <span class="ml-2" style="color:green"><strong>({{ \App\RequestsNotification::where(['type' => 'return', 'seller_id' => Auth::user()->id])->count() }})</strong></span>
+                            @endif
                         </span>
                     </a>
                 </li>
@@ -102,6 +108,9 @@
                         <i class="la la-money"></i>
                         <span class="category-name">
                             {{__('Refund Requests')}}
+                            @if (\App\RequestsNotification::where(['type' => 'refund', 'seller_id' => Auth::user()->id])->exists())
+                                <span class="ml-2" style="color:green"><strong>({{ \App\RequestsNotification::where(['type' => 'refund', 'seller_id' => Auth::user()->id])->count() }})</strong></span>
+                            @endif
                         </span>
                     </a>
                 </li>

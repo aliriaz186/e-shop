@@ -48,6 +48,8 @@ Route::get('/sitemap.xml', function(){
 Route::post('/purchase_history/return_product', 'PurchaseHistoryController@returnProduct')->name('purchase_history.return_product');
 Route::post('/purchase_history/cancel', 'PurchaseHistoryController@cancel')->name('purchase_history.cancel');
 Route::post('/purchase_history/refund', 'PurchaseHistoryController@refundRequest')->name('purchase_history.refund');
+Route::post('/seller_feedback', 'PurchaseHistoryController@sellerFeedback')->name('purchase_history.seller_feedback');
+Route::post('/product_feedback', 'PurchaseHistoryController@productFeedback')->name('purchase_history.product_feedback');
 
 
 Route::get('/cancellation-request', 'PurchaseHistoryController@cancellation_request')->name('purchase_history.cancellation_request');
@@ -119,12 +121,16 @@ Route::get('/returnpolicy', 'HomeController@returnpolicy')->name('returnpolicy')
 Route::get('/supportpolicy', 'HomeController@supportpolicy')->name('supportpolicy');
 Route::get('/terms', 'HomeController@terms')->name('terms');
 Route::get('/privacypolicy', 'HomeController@privacypolicy')->name('privacypolicy');
+Route::post('/seller_settings_update', 'SellerSettingsController@update')->name('seller.settings_update');
 
 Route::group(['middleware' => ['user', 'verified']], function(){
     Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
     Route::get('/profile', 'HomeController@profile')->name('profile');
     Route::post('/customer/update-profile', 'HomeController@customer_update_profile')->name('customer.profile.update');
     Route::post('/seller/update-profile', 'HomeController@seller_update_profile')->name('seller.profile.update');
+    Route::post('/customer/shipping_update', 'ShippingAddressController@saveChanges')->name('customer.shipping_update');
+    Route::post('/customer/shipping_new', 'ShippingAddressController@addNew')->name('customer.shipping_new');
+    Route::post('/customer/shipping_default', 'ShippingAddressController@makeAsDefault')->name('customer.shipping_default');
 
     Route::resource('purchase_history','PurchaseHistoryController');
     Route::post('/purchase_history/details', 'PurchaseHistoryController@purchase_history_details')->name('purchase_history.details');

@@ -90,11 +90,14 @@
                                                             </span>
                                                     </td>
                                                     <td>
-                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == 0 || $order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == '0')
+                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status != 'Processing Refund' &&   explode(" ",$order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status)[0] != "refunded")
                                                             <button class="btn btn-success btn-sm" onclick="refundOrderApproveModal({{$order->id}})" data-toggle="modal" data-target="#refundOrderRequest">Accept</button>
                                                             <button class="btn btn-danger btn-sm ml-2" onclick="refundOrderRejectModal({{$order->id}})" data-toggle="modal" data-target="#refundOrderRequest">Reject</button>
                                                         @endif
-                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == 1 || $order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == '1')
+                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status == 'Processing Refund')
+                                                            <div style="background: green; padding: 5px; border-radius: 5px; color: white; width: 100px;">Processing Refund</div>
+                                                        @endif
+                                                        @if(explode(" ",$order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status)[0] == "refunded")
                                                             <div style="background: green; padding: 5px; border-radius: 5px; color: white; width: 75px;">Approved</div>
                                                         @endif
                                                     </td>

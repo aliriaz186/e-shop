@@ -90,14 +90,16 @@
                                                             </span>
                                                     </td>
                                                     <td>
-                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_accepted_cancellation == 0 || $order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_accepted_cancellation == '0')
+                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status != "Cancellation Pending" && $order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status != "cancelled")
                                                         <button class="btn btn-success btn-sm" onclick="cancelOrderApproveModal({{$order->id}})" data-toggle="modal" data-target="#cancelOrderRequest">Accept</button>
                                                         <button class="btn btn-danger btn-sm ml-2" onclick="cancelOrderRejectModal({{$order->id}})" data-toggle="modal" data-target="#cancelOrderRequest">Reject</button>
                                                         @endif
-                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_accepted_cancellation == 1 || $order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_accepted_cancellation == '1')
-                                                        <div style="background: green; padding: 5px; border-radius: 5px; color: white; width: 75px;">Approved</div>
+                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status == "Cancellation Pending")
+                                                           <div style="background: green; padding: 5px; border-radius: 5px; color: white; width: 100px;">Cancellation Pending</div>
                                                         @endif
-
+                                                         @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status == "cancelled")
+                                                            <div style="background: green; padding: 5px; border-radius: 5px; color: white; width: 75px;">Approved</div>
+                                                        @endif
                                                     </td>
                                                 </tr>
                                             @endif

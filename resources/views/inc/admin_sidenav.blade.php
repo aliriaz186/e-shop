@@ -272,18 +272,27 @@
                             <a class="nav-link" href="{{ route('admin.cancellation_requests') }}">
                                 <i class="fa fa-trash"></i>
                                 <span class="menu-title">{{__('Cancellation Requests')}}</span>
+                                @if (\App\RequestsNotification::where(['type' => 'cancel', 'seller_id' => Auth::user()->id])->exists() || \App\CancellationRequests::where(['viewed' => 0])->exists())
+                                    <span class="pull-right badge badge-info">{{ \App\RequestsNotification::where(['type' => 'cancel', 'seller_id' => Auth::user()->id])->count() + \App\CancellationRequests::where(['viewed' => 0])->count()}}</span>
+                                @endif
                             </a>
                         </li>
                         <li class="{{ areActiveRoutes(['admin.return_requests'])}}">
                             <a class="nav-link" href="{{ route('admin.return_requests') }}">
                                 <i class="fa fa-backward"></i>
                                 <span class="menu-title">{{__('Return Requests')}}</span>
+                                @if (\App\RequestsNotification::where(['type' => 'return', 'seller_id' => Auth::user()->id])->exists())
+                                    <span class="pull-right badge badge-info">{{ \App\RequestsNotification::where(['type' => 'return', 'seller_id' => Auth::user()->id])->count()}}</span>
+                                @endif
                             </a>
                         </li>
                         <li class="{{ areActiveRoutes(['admin.refund_requests'])}}">
                             <a class="nav-link" href="{{ route('admin.refund_requests') }}">
                                 <i class="fa fa-money"></i>
                                 <span class="menu-title">{{__('Refund Requests')}}</span>
+                                @if (\App\RequestsNotification::where(['type' => 'refund', 'seller_id' => Auth::user()->id])->exists() || \App\RefundRequest::where(['viewed' => 0])->exists())
+                                    <span class="pull-right badge badge-info">{{ \App\RequestsNotification::where(['type' => 'refund', 'seller_id' => Auth::user()->id])->count() + \App\RefundRequest::where(['viewed' => 0])->count()}}</span>
+                                @endif
                             </a>
                         </li>
                         <li class="{{ areActiveRoutes(['conversations.admin_index', 'conversations.admin_show'])}}">

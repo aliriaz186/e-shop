@@ -43,7 +43,7 @@
                                                         <a href="#{{ $order->code }}" onclick="show_order_details({{ $order->id }})">{{ $order->code }}</a>
                                                     </td>
                                                     <td>
-                                                        {{ count($order->orderDetails->where('seller_id', Auth::user()->id)) }}
+                                                        {{ count($order->orderDetails->where('order_id', $order->id)) }}
                                                     </td>
                                                     <td>
                                                         @if ($order->user_id != null)
@@ -53,7 +53,7 @@
                                                         @endif
                                                     </td>
                                                     <td>
-                                                        {{ single_price($order->orderDetails->where('seller_id', Auth::user()->id)->sum('price')) }}
+                                                        {{ single_price($order->orderDetails->where('order_id', $order->id)->sum('price')) }}
                                                     </td>
                                                     <td>
                                                         @php
@@ -63,7 +63,7 @@
                                                     </td>
                                                     <td>
                                                             <span class="badge badge--2 mr-4">
-                                                                @if ($order->orderDetails->where('seller_id', Auth::user()->id)->first()->payment_status == 'paid')
+                                                                @if ($order->orderDetails->where('order_id', $order->id)->first()->payment_status == 'paid')
                                                                     <i class="bg-green"></i> {{__('Paid')}}
                                                                 @else
                                                                     <i class="bg-red"></i> {{__('Unpaid')}}
@@ -71,11 +71,12 @@
                                                             </span>
                                                     </td>
                                                     <td>
-                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == 0 || $order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == '0')
+                                                        <span id="isSellerRequest" style="display: none">{{\App\RefundRequest::where('order_id', $order->id)->exists()}}</span>
+                                                        @if($order->orderDetails->where('order_id', $order->id)->first()->is_refund_accepted == 0 || $order->orderDetails->where('order_id', $order->id)->first()->is_refund_accepted == '0')
                                                             <button class="btn btn-success btn-sm" onclick="refundOrderApproveModal({{$order->id}})" data-toggle="modal" data-target="#refundOrderRequest">Accept</button>
                                                             <button class="btn btn-danger btn-sm ml-2" onclick="refundOrderRejectModal({{$order->id}})" data-toggle="modal" data-target="#refundOrderRequest">Reject</button>
                                                         @endif
-                                                        @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == 1 || $order->orderDetails->where('seller_id', Auth::user()->id)->first()->is_refund_accepted == '1')
+                                                        @if($order->orderDetails->where('order_id', $order->id)->first()->is_refund_accepted == 1 || $order->orderDetails->where('order_id', $order->id)->first()->is_refund_accepted == '1')
                                                             <div style="background: green; padding: 5px; border-radius: 5px; color: white; width: 75px;">Approved</div>
                                                         @endif
                                                     </td>
@@ -90,7 +91,7 @@
 
                         <div class="pagination-wrapper py-4">
                             <ul class="pagination justify-content-end">
-                                {{--                                {{ $orders->links() }}--}}
+                                {{--{{ $orders->links() }}--}}
                             </ul>
                         </div>
                     </div>
@@ -135,7 +136,7 @@
                         <input type="hidden" name="incomming" value="admin.refund_requests">
                         <input type="hidden" name="type" id="refund-type-id">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Continue</button>
+                        <button type="submit" class="btn btn-primary" id="continue-btn-click">Continue</button>
                     </div>
                 </form>
             </div>
@@ -162,6 +163,9 @@
             document.getElementById('refund-type-id').value = "approve";
             document.getElementById('refund-type').innerHTML = "";
             document.getElementById('isApproveType').style.display = 'inline';
+            if(document.getElementById("isSellerRequest").innerHTML === 1 || document.getElementById("isSellerRequest").innerHTML === "1"){
+                document.getElementById('continue-btn-click').click();
+            }
         }
 
         function refundOrderRejectModal(id) {

@@ -120,6 +120,47 @@
                                 </div>
                             </div>
                         </div>
+                        <section class="slice-sm footer-top-bar bg-white mt-2">
+                            <div class="container sct-inner">
+                                <div class="row no-gutters">
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="footer-top-box text-center">
+                                            <a href="{{ route('sellerpolicy') }}">
+                                                <i class="la la-bar-chart-o"></i>
+                                                <h4 class="heading-5">{{__('Manage My Ads')}}</h4>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="footer-top-box text-center">
+                                            <a href="{{ route('returnpolicy') }}">
+                                                <i class="la la-group"></i>
+                                                <h4 class="heading-5">{{__('Affiliate Program')}}</h4>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="footer-top-box text-center">
+                                            <a href="{{ route('supportpolicy') }}">
+                                                <i class="la la-cart-plus"></i>
+                                                <h4 class="heading-5">{{__('Submit Offers')}}</h4>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="footer-top-box text-center">
+                                            <a href="{{ route('profile') }}">
+                                                <label class="switch">
+                                                    <input type="checkbox" onchange="updateSellerSettings()" {{\App\SellerSettings::where('seller_id', \Illuminate\Support\Facades\Auth::user()->id)->exists() ? "checked" : ""}}>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <h4 class="heading-5">{{__('Holiday & Shop Maintenance Mode')}}</h4>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                         <div class="row">
                             <div class="col-md-8">
                                 <div class="form-box bg-white mt-4">
@@ -158,5 +199,11 @@
             </div>
         </div>
     </section>
-
+<script>
+    function updateSellerSettings() {
+        $.post('{{ route('seller.settings_update') }}',{_token:'{{ @csrf_token() }}'}, function(data){
+                window.location.reload();
+        });
+    }
+</script>
 @endsection
