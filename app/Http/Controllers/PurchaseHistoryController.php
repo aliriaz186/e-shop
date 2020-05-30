@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Product;
+use App\RequestsNotification;
+use App\Review;
+use App\SellerFeedback;
 use Illuminate\Http\Request;
 use App\Order;
 use App\OrderDetail;
@@ -103,6 +107,11 @@ class PurchaseHistoryController extends Controller
         $order_details = OrderDetail::findOrFail($request->order_id);
         $order_details->return_request= $request->return_request;
         $order_details->return_reason = $request->return_reason;
+        $notification = new RequestsNotification();
+        $notification->order_id = $request->order_id;
+        $notification->seller_id = $order_details->seller_id;
+        $notification->type = "return";
+        $notification->save();
         if($order_details->update()){
             flash(__('successfully'))->success();
             return redirect()->route('purchase_history.index');
@@ -115,6 +124,11 @@ class PurchaseHistoryController extends Controller
     {
         $order_details = OrderDetail::findOrFail($request->order_id);
         $order_details->cancellation_request = $request->cancellation_request;
+        $notification = new RequestsNotification();
+        $notification->order_id = $request->order_id;
+        $notification->seller_id = $order_details->seller_id;
+        $notification->type = "cancel";
+        $notification->save();
         if($order_details->update()){
             flash(__('successfully'))->success();
             return redirect()->route('purchase_history.index');
@@ -127,6 +141,11 @@ class PurchaseHistoryController extends Controller
     {
         $order_details = OrderDetail::findOrFail($request->order_id);
         $order_details->refund_request = $request->refund_request;
+        $notification = new RequestsNotification();
+        $notification->order_id = $request->order_id;
+        $notification->seller_id = $order_details->seller_id;
+        $notification->type = "refund";
+        $notification->save();
         if($order_details->update()){
             flash(__('successfully'))->success();
             return redirect()->route('purchase_history.index');
@@ -154,6 +173,32 @@ class PurchaseHistoryController extends Controller
             ->where('order_details.cancellation_request', '!=', '')
             ->orderBy('orders.created_at', 'desc')->paginate(9);
         return view('frontend.cancellation_request', compact('orders'));
+    }
+
+    public function sellerFeedback(Request $request){
+        $feedback = new SellerFeedback();
+        $feedback->user_id = \Illuminate\Support\Facades\Auth::user()->id;
+        $feedback->order_id = $request->order_id;
+        $feedback->message = $request->message;
+        if($feedback->save()){
+            flash(__('successfully'))->success();
+            return redirect()->route('purchase_history.index');
+        }
+        flash(__('Something went wrong'))->error();
+        return back();
+    }
+
+    public function productFeedback(Request $request){
+        $feedback = new Review();
+        $feedback->user_id = \Illuminate\Support\Facades\Auth::user()->id;
+        $feedback->product_id = OrderDetail::where('order_id', $request->order_id)->first()['product_id'];
+        $feedback->comment = $request->message;
+        if($feedback->save()){
+            flash(__('successfully'))->success();
+            return redirect()->route('purchase_history.index');
+        }
+        flash(__('Something went wrong'))->error();
+        return back();
     }
 
 

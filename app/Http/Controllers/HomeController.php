@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ShippingAddress;
 use Illuminate\Http\Request;
 use Session;
 use Auth;
@@ -119,7 +120,20 @@ class HomeController extends Controller
     public function profile(Request $request)
     {
         if(Auth::user()->user_type == 'customer'){
-            return view('frontend.customer.profile');
+            if(!ShippingAddress::where('user_id', Auth::user()->id)->exists()){
+                $user = Auth::user();
+                $shippingAddress = new ShippingAddress();
+                $shippingAddress->user_id = Auth::user()->id;
+                $shippingAddress->address = $user->address;
+                $shippingAddress->country = $user->country;
+                $shippingAddress->city = $user->city;
+                $shippingAddress->postal_code = $user->postal_code;
+                $shippingAddress->phone = $user->phone;
+                $shippingAddress->is_default = 1;
+                $shippingAddress->save();
+            }
+            $shippingAddress = ShippingAddress::where('user_id', Auth::user()->id)->get();
+            return view('frontend.customer.profile')->with(['shippingAddress' => $shippingAddress]);
         }
         elseif(Auth::user()->user_type == 'seller'){
             return view('frontend.seller.profile');

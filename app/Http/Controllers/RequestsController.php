@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\CancellationRequests;
 use App\Order;
 use App\OrderDetail;
 use App\RefundRequest;
+use App\RequestsNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,6 +23,14 @@ class RequestsController extends Controller
                }
             }
         }
+        foreach ($orders as $order){
+            if(RequestsNotification::where(['order_id' => $order->id, 'type' => 'cancel', 'seller_id' => Auth::user()->id])->exists()){
+                $notifications = RequestsNotification::where(['order_id' => $order->id, 'type' => 'cancel', 'seller_id' => Auth::user()->id])->get();
+                foreach ($notifications as $notification){
+                    $notification->delete();
+                }
+            }
+        }
         return view('frontend.seller.cancellation_requests', compact('orders'));
     }
 
@@ -35,6 +45,14 @@ class RequestsController extends Controller
                }
             }
         }
+        foreach ($orders as $order){
+            if(RequestsNotification::where(['order_id' => $order->id, 'type' => 'return', 'seller_id' => Auth::user()->id])->exists()){
+                $notifications = RequestsNotification::where(['order_id' => $order->id, 'type' => 'return', 'seller_id' => Auth::user()->id])->get();
+                foreach ($notifications as $notification){
+                    $notification->delete();
+                }
+            }
+        }
         return view('frontend.seller.return_requests', compact('orders'));
     }
 
@@ -47,6 +65,14 @@ class RequestsController extends Controller
                if (!empty($orderDetail->refund_request)){
                    array_push($orders, $order);
                }
+            }
+        }
+        foreach ($orders as $order){
+            if(RequestsNotification::where(['order_id' => $order->id, 'type' => 'refund', 'seller_id' => Auth::user()->id])->exists()){
+                $notifications = RequestsNotification::where(['order_id' => $order->id, 'type' => 'refund', 'seller_id' => Auth::user()->id])->get();
+                foreach ($notifications as $notification){
+                    $notification->delete();
+                }
             }
         }
         return view('frontend.seller.refund_requests', compact('orders'));
@@ -77,8 +103,8 @@ class RequestsController extends Controller
             if (empty($request->amount)){
                 $request->amount = Order::where('id', $request->order_id)->first()['grand_total'];
             }
-            $orderDetail->delivery_status = 'refunded';
-            $orderDetail->is_refund_accepted = 1;
+            $orderDetail->delivery_status = 'Processing Refund';
+            $orderDetail->is_refund_accepted = 0;
             if (empty($orderDetail->refund_request)){
                 $orderDetail->refund_request = "refunded";
             }
@@ -103,8 +129,12 @@ class RequestsController extends Controller
     public function cancelledBySeller(Request $request){
         $orderDetail = OrderDetail::where('order_id', $request->order_id)->first();
         if ($request->type=="approve"){
-            $orderDetail->delivery_status = 'cancelled';
-            $orderDetail->is_accepted_cancellation = 1;
+            $orderDetail->delivery_status = 'Cancellation Pending';
+            $orderDetail->is_accepted_cancellation = 0;
+            $cancelRequest = new CancellationRequests();
+            $cancelRequest->order_id = $request->order_id;
+            $cancelRequest->is_accepted = 0;
+            $cancelRequest->save();
         }else if($request->type=="reject"){
             $orderDetail->is_accepted_cancellation = 0;
             $orderDetail->cancellation_request = "";
