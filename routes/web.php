@@ -131,6 +131,7 @@ Route::group(['middleware' => ['user', 'verified']], function(){
     Route::post('/customer/shipping_update', 'ShippingAddressController@saveChanges')->name('customer.shipping_update');
     Route::post('/customer/shipping_new', 'ShippingAddressController@addNew')->name('customer.shipping_new');
     Route::post('/customer/shipping_default', 'ShippingAddressController@makeAsDefault')->name('customer.shipping_default');
+    Route::post('/customer/shipping_delete', 'ShippingAddressController@deleteShipping')->name('customer.shipping_delete');
 
     Route::resource('purchase_history','PurchaseHistoryController');
     Route::post('/purchase_history/details', 'PurchaseHistoryController@purchase_history_details')->name('purchase_history.details');

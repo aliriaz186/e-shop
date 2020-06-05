@@ -26,6 +26,8 @@
                                             <th>{{__('Amount')}}</th>
                                             <th>{{__('Delivery Status')}}</th>
                                             <th>{{__('Payment Status')}}</th>
+                                            <th>{{__('Refund Type')}}</th>
+                                            <th>{{__('Refund Amount')}}</th>
                                             <th style="width: 20%">{{__('Options')}}</th>
                                         </tr>
                                         </thead>
@@ -71,9 +73,15 @@
                                                             </span>
                                                     </td>
                                                     <td>
+                                                        {{$order_id->refund_type}}
+                                                    </td>
+                                                    <td>
+                                                        {{$order_id->refund_amount}}
+                                                    </td>
+                                                    <td>
                                                         <span id="isSellerRequest" style="display: none">{{\App\RefundRequest::where('order_id', $order->id)->exists()}}</span>
                                                         @if($order->orderDetails->where('order_id', $order->id)->first()->is_refund_accepted == 0 || $order->orderDetails->where('order_id', $order->id)->first()->is_refund_accepted == '0')
-                                                            <button class="btn btn-success btn-sm" onclick="refundOrderApproveModal({{$order->id}})" data-toggle="modal" data-target="#refundOrderRequest">Accept</button>
+                                                            <button class="btn btn-success btn-sm" onclick="refundOrderApproveModal({{$order->id}})" data-toggle="modal" data-target="#refundOrderRequest">Process Refund</button>
                                                             <button class="btn btn-danger btn-sm ml-2" onclick="refundOrderRejectModal({{$order->id}})" data-toggle="modal" data-target="#refundOrderRequest">Reject</button>
                                                         @endif
                                                         @if($order->orderDetails->where('order_id', $order->id)->first()->is_refund_accepted == 1 || $order->orderDetails->where('order_id', $order->id)->first()->is_refund_accepted == '1')

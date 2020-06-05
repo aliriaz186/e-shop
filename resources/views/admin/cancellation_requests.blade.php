@@ -51,7 +51,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        {{ single_price($order->orderDetails->where('seller_id', Auth::user()->id)->sum('price')) }}
+                                        {{ single_price($order->orderDetails->where('order_id', $order->id)->sum('price')) }}
                                     </td>
                                     <td>
                                         @php
@@ -70,8 +70,8 @@
                                     </td>
                                     <td>
                                         @if($order->orderDetails->where('order_id', $order->id)->first()->is_accepted_cancellation == 0 || $order->orderDetails->where('order_id', $order->id)->first()->is_accepted_cancellation == '0')
-                                            <button class="btn btn-success btn-sm" onclick="cancelOrderApproveModal({{$order->id}})" data-toggle="modal" data-target="#cancelOrderRequest">Accept</button>
-                                            <button class="btn btn-danger btn-sm ml-2" onclick="cancelOrderRejectModal({{$order->id}})" data-toggle="modal" data-target="#cancelOrderRequest">Reject</button>
+                                            <button class="btn btn-success btn-sm" onclick="cancelOrderApproveModal({{$order->id}})" data-toggle="modal" data-target="#cancelOrderRequest">Approve Cancellation</button>
+                                            {{--<button class="btn btn-danger btn-sm ml-2" onclick="cancelOrderRejectModal({{$order->id}})" data-toggle="modal" data-target="#cancelOrderRequest">Reject</button>--}}
                                         @endif
                                         @if($order->orderDetails->where('order_id', $order->id)->first()->is_accepted_cancellation == 1 || $order->orderDetails->where('order_id', $order->id)->first()->is_accepted_cancellation == '1')
                                             <div style="background: green; padding: 5px; border-radius: 5px; color: white; width: 75px;">Approved</div>

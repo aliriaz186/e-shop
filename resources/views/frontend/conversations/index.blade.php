@@ -51,9 +51,9 @@
                                             <div class="col-2">
                                                 <p>
                                                     @if (Auth::user()->id == $conversation->sender_id)
-                                                        <a href="javascript:;">{{ $conversation->receiver->name }}</a>
+                                                        <a href="javascript:;" style="color: black; font-weight: bold">{{ $conversation->receiver->name }}</a>
                                                     @else
-                                                        <a href="javascript:;">{{ $conversation->sender->name }}</a>
+                                                        <a href="javascript:;" style="color: black; font-weight: bold">{{ $conversation->sender->name }}</a>
                                                     @endif
                                                     <br>
                                                     <span class="comment-date">
@@ -67,7 +67,7 @@
                                                         <div class="row no-gutters">
                                                             <div class="col">
                                                                 <h4 class="heading heading-6">
-                                                                    <a href="{{ route('conversations.show', encrypt($conversation->id)) }}">
+                                                                    <a href="{{ route('conversations.show', encrypt($conversation->id)) }}" style="color: #e62e04">
                                                                         {{ $conversation->title }}
                                                                     </a>
                                                                     @if ((Auth::user()->id == $conversation->sender_id && $conversation->sender_viewed == 0) || (Auth::user()->id == $conversation->receiver_id && $conversation->receiver_viewed == 0))

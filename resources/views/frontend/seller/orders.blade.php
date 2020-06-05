@@ -97,7 +97,7 @@
 
                                                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
                                                                 <button onclick="show_order_details({{ $order->id }})" class="dropdown-item">{{__('Order Details')}}</button>
-                                                                <button onclick="show_chat_modal({{ $order->id }})" class="dropdown-item" data-toggle="modal" data-target="#chatModal">{{__('Contact Buyer')}}</button>
+                                                                <button onclick="show_chat_modal('{{ $order->code }}','{{$order->id}}')" class="dropdown-item" data-toggle="modal" data-target="#chatModal">{{__('Contact Buyer')}}</button>
                                                                 <button onclick="show_chat_modal({{ $order->links }})" class="dropdown-item">{{__('Request Feedback')}}</button>
                                                                 @if($order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status == 'pending' || $order->orderDetails->where('seller_id', Auth::user()->id)->first()->delivery_status == 'review')
                                                                 <button data-toggle="modal" data-target="#cancelRequest" class="dropdown-item" onclick="cancelOrderBySeller({{$order->id}})">{{__('Cancel Order')}}</button>
@@ -237,6 +237,8 @@
                     <div class="modal-body gry-bg px-3 pt-3">
                         <div class="form-group">
                             <input type="text" class="form-control mb-3" name="title" placeholder="Order Id" id="product-code-con" required readonly>
+                            <input type="hidden" class="form-control mb-3" name="orderId" placeholder="Order Id" id="orderIdGet" required readonly>
+                            <input type="hidden" class="form-control mb-3" name="orderType" value="dummy" required readonly>
                         </div>
                         <div class="form-group">
                             <textarea class="form-control" rows="8" name="message" required placeholder="Your Question"></textarea>
@@ -251,8 +253,9 @@
         </div>
     </div>
 <script>
-    function show_chat_modal(code){
+    function show_chat_modal(code, id){
         document.getElementById("product-code-con").value = code;
+        document.getElementById("orderIdGet").value = id;
     }
     function cancelOrderBySeller(id) {
         document.getElementById('can-modal-order-id').value = id;

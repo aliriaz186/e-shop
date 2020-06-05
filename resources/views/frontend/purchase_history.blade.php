@@ -83,7 +83,7 @@
 
                                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="">
                                                             <button onclick="show_purchase_history_details({{ $order->id }})" class="dropdown-item">{{__('Order Details')}}</button>
-                                                            <button data-toggle="modal" data-target="#chatModal" onclick="show_chat_modal({{ $order->id }})" class="dropdown-item">{{__('Contact Seller')}}</button>
+                                                            <button data-toggle="modal" data-target="#chatModal" onclick="show_chat_modal('{{ $order->code }}','{{$order->id}}')" class="dropdown-item">{{__('Contact Seller')}}</button>
                                                             @if($order->detail->delivery_status == 'pending' || $order->detail->delivery_status == 'review')
                                                             <button data-toggle="modal" data-target="#cancelRequest" class="dropdown-item" onclick="cancelOrderModal({{$order->id}})">{{__('Cancel Order')}}</button>
                                                              @endif
@@ -336,6 +336,7 @@
                     <div class="modal-body gry-bg px-3 pt-3">
                         <div class="form-group">
                             <input type="text" class="form-control mb-3" name="title" placeholder="Order Id" id="product-code-con" required readonly>
+                            <input type="hidden" class="form-control mb-3" name="orderId" placeholder="Order Id" id="orderIdGet" required readonly>
                         </div>
                         <div class="form-group">
                             <textarea class="form-control" rows="8" name="message" required placeholder="Your Question"></textarea>
@@ -353,8 +354,9 @@
 @endsection
 @section('script')
     <script type="text/javascript">
-        function show_chat_modal(code){
+        function show_chat_modal(code, id){
             document.getElementById("product-code-con").value = code;
+            document.getElementById("orderIdGet").value = id;
         }
 
         function seller_feedback(id){

@@ -88,6 +88,8 @@ class AdminRequestsController extends Controller
                         }
                     }
                     if (!$flag){
+                        $orderDetail->refund_type = $requestData->refund_type;
+                        $orderDetail->refund_amount = $requestData->amount;
                         array_push($orders, $orderDetail);
                     }
                 }

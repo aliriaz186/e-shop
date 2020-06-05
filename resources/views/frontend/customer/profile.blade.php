@@ -145,7 +145,7 @@
                             </div>
 
                             <div class="text-right mt-4">
-                                <button class="btn btn-styled text-right" type="button" data-toggle="modal" data-target="#addressModal">{{__('Manage Shipping Address')}}</button>
+                                <button class="btn btn-styled btn-base-1 text-right" type="button" data-toggle="modal" data-target="#addressModal">{{__('Manage Shipping Address')}}</button>
                                 <button type="submit" class="btn btn-styled btn-base-1" >{{__('Update Profile')}}</button>
                             </div>
                         </form>
@@ -223,6 +223,7 @@
                             <div class="mb-3 ml-2">
                                 <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="updateCustomerShippingtoDefault({{$address->id}})">Make as Default</button>
+                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomerShippingtoDefault({{$address->id}})">Delete</button>
                             </div>
                         </div>
                             </form>
@@ -242,6 +243,18 @@
     function updateCustomerShippingtoDefault(id) {
         $.post('{{ route('customer.shipping_default') }}',{_token:'{{ @csrf_token() }}', shippingId:id}, function(data){
                 window.location.reload();
+        });
+    }
+
+    function deleteCustomerShippingtoDefault(id) {
+        $.post('{{ route('customer.shipping_delete') }}',{_token:'{{ @csrf_token() }}', shippingId:id}, function(data){
+            console.log(data);
+            if(data === false || data === 'false'){
+                    alert('Default Address cannot be deleted')
+                }
+                setTimeout(function () {
+                   window.location.reload();
+                },1000);
         });
     }
 </script>

@@ -64,4 +64,13 @@ class ShippingAddressController extends Controller
         flash(__('Something went wrong'))->error();
         return back();
     }
+
+    public function deleteShipping(Request $request){
+        $shippingAddress = ShippingAddress::where('id', $request->shippingId)->first();
+        if ($shippingAddress->is_default != 1){
+            $shippingAddress->delete();
+            return json_encode(true);
+        }
+        return json_encode(false);
+    }
 }

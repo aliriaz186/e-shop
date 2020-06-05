@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Order;
 use App\OrderDetail;
 use Illuminate\Http\Request;
 use App\Conversation;
@@ -64,12 +65,17 @@ class ConversationController extends Controller
      */
     public function store(Request $request)
     {
-        if (empty($request->product_id) && !empty($request->title)){
-            $request->product_id = OrderDetail::where('order_id', $request->title)->first()['product_id'];
+        if (empty($request->product_id) && !empty($request->orderId)){
+            $request->product_id = OrderDetail::where('order_id', $request->orderId)->first()['product_id'];
         }
         $conversation = new Conversation;
         $conversation->sender_id = Auth::user()->id;
         $conversation->receiver_id = Product::findOrFail($request->product_id)->user->id;
+        if (!empty($request->orderType)){
+            if (!empty($request->orderId)){
+                $conversation->receiver_id = Order::where('id', $request->orderId)->first()['user_id'];
+            }
+        }
         $conversation->title = $request->title;
         $conversation->save();
 
