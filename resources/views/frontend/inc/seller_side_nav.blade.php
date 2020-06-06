@@ -143,12 +143,39 @@
                                 ->select('reviews.id')
                                 ->distinct()
                                 ->count();
+
+
                 @endphp
                 <li>
                     <a href="{{ route('reviews.seller') }}" class="{{ areActiveRoutesHome(['reviews.seller'])}}">
                         <i class="la la-star-o"></i>
                         <span class="category-name">
                             {{__('Product Reviews')}}@if($review_count > 0)<span class="ml-2" style="color:green"><strong>({{ $review_count }} {{ __('New') }})</strong></span>@endif
+                        </span>
+                    </a>
+                </li>
+                @php
+                    $reviewList = \App\SellerFeedback::all();
+                    $reviews = [];
+                    foreach ($reviewList as $review){
+                        $sellerId = \App\OrderDetail::where('order_id', $review->order_id)->first()['seller_id'];
+                        if ($sellerId == \Illuminate\Support\Facades\Auth::user()->id){
+                            array_push($reviews, $review);
+                        }
+                    }
+                    $sellerRatingCount = 0;
+                    foreach ($reviews as $key => $value) {
+                        if ($value->viewed == 0){
+                            $sellerRatingCount++;
+                        }
+                    }
+                @endphp
+                <li>
+                    <a href="{{ route('ratings.seller') }}" class="{{ areActiveRoutesHome(['ratings.seller'])}}">
+                        <i class="la la-star-o"></i>
+                        <span class="category-name">
+                            {{__('Seller Reviews')}}
+                            @if($sellerRatingCount > 0)<span class="ml-2" style="color:green"><strong>({{$sellerRatingCount }} {{ __('New') }})</strong></span>@endif
                         </span>
                     </a>
                 </li>

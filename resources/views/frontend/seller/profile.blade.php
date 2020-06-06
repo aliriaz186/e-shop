@@ -346,6 +346,7 @@
 
 
                             <div class="text-right mt-4">
+                                <button class="btn btn-styled btn-base-1 text-right" type="button" data-toggle="modal" data-target="#addressModal">{{__('Manage Shipping Address')}}</button>
                                 <button type="submit" class="btn btn-styled btn-base-1">{{__('Update Profile')}}</button>
                             </div>
                         </form>
@@ -353,6 +354,110 @@
                 </div>
             </div>
         </div>
-    </section>
 
+        <div class="modal fade" id="addressModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Manage Multiple Address</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        @foreach($shippingAddress as $address)
+                            <form method="post" action="{{route('customer.shipping_update')}}">
+                                @csrf
+                                <input type="hidden" name="shippingId" value="{{$address->id}}">
+                                <div class="form-box bg-white mt-4" style="border: 2px dotted lightgrey">
+                                    <div class="form-box-title px-3 py-2">
+                                        {{__('Shipping info')}}
+                                    </div>
+                                    <div class="form-box-content p-3">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label>{{__('Address')}}</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <textarea class="form-control textarea-autogrow mb-3" placeholder="{{__('Your Address')}}" rows="1" name="address">{{ $address->address }}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label>{{__('Country')}}</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <div class="mb-3">
+                                                    <select class="form-control mb-3 selectpicker" data-placeholder="{{__('Select your country')}}" name="country">
+                                                        @foreach (\App\Country::all() as $key => $country)
+                                                            <option value="{{ $country->code }}" <?php if($address->country == $country->code) echo "selected";?> >{{ $country->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label>{{__('City')}}</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control mb-3" placeholder="{{__('Your City')}}" name="city" value="{{ $address->city }}">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label>{{__('Postal Code')}}</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control mb-3" placeholder="{{__('Your Postal Code')}}" name="postal_code" value="{{ $address->postal_code }}">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <label>{{__('Phone')}}</label>
+                                            </div>
+                                            <div class="col-md-10">
+                                                <input type="text" class="form-control mb-3" placeholder="{{__('Your Phone Number')}}" name="phone" value="{{ $address->phone }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 ml-2">
+                                        <button type="submit" class="btn btn-primary btn-sm">Save changes</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" onclick="updateCustomerShippingtoDefault({{$address->id}})">Make as Default</button>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomerShippingtoDefault({{$address->id}})">Delete</button>
+                                    </div>
+                                </div>
+                            </form>
+                        @endforeach
+                        <div class="mt-2 mb-2" style="text-align: center">
+                            <form  method="post" action="{{route('customer.shipping_new')}}">
+                                @csrf
+                                <button type="submit" class="btn btn-primary btn-sm">Add New</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+<script>
+    function updateCustomerShippingtoDefault(id) {
+        $.post('{{ route('customer.shipping_default') }}',{_token:'{{ @csrf_token() }}', shippingId:id}, function(data){
+            window.location.reload();
+        });
+    }
+
+    function deleteCustomerShippingtoDefault(id) {
+        $.post('{{ route('customer.shipping_delete') }}',{_token:'{{ @csrf_token() }}', shippingId:id}, function(data){
+            console.log(data);
+            if(data === false || data === 'false'){
+                alert('Default Address cannot be deleted')
+            }
+            setTimeout(function () {
+                window.location.reload();
+            },1000);
+        });
+    }
+</script>
 @endsection

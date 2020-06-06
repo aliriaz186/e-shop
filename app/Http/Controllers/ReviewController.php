@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\OrderDetail;
+use App\SellerFeedback;
 use Illuminate\Http\Request;
 use App\Review;
 use App\Product;
@@ -39,6 +41,24 @@ class ReviewController extends Controller
         }
 
         return view('frontend.seller.reviews', compact('reviews'));
+    }
+
+    public function sellerRatings()
+    {
+        $reviewList = SellerFeedback::all();
+        $reviews = [];
+        foreach ($reviewList as $review){
+            $sellerId = OrderDetail::where('order_id', $review->order_id)->first()['seller_id'];
+            if ($sellerId == \Illuminate\Support\Facades\Auth::user()->id){
+                array_push($reviews, $review);
+            }
+        }
+        foreach ($reviews as $key => $value) {
+            $review = SellerFeedback::find($value->id);
+            $review->viewed = 1;
+            $review->update();
+        }
+        return view('frontend.seller.ratings', compact('reviews'));
     }
 
     /**

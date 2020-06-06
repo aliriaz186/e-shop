@@ -262,6 +262,23 @@
                 <form method="post" action="{{route('purchase_history.seller_feedback')}}" id="refund-order-form">
                     @csrf
                 <div class="modal-body">
+                    <h4>Rate Seller</h4>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="c-rating mt-1 mb-1 clearfix d-inline-block">
+                                <input type="radio" id="star5" name="rating" value="5" required/>
+                                <label class="star" for="star5" title="Awesome" aria-hidden="true"></label>
+                                <input type="radio" id="star4" name="rating" value="4" required/>
+                                <label class="star" for="star4" title="Great" aria-hidden="true"></label>
+                                <input type="radio" id="star3" name="rating" value="3" required/>
+                                <label class="star" for="star3" title="Very good" aria-hidden="true"></label>
+                                <input type="radio" id="star2" name="rating" value="2" required/>
+                                <label class="star" for="star2" title="Good" aria-hidden="true"></label>
+                                <input type="radio" id="star1" name="rating" value="1" required/>
+                                <label class="star" for="star1" title="Bad" aria-hidden="true"></label>
+                            </div>
+                        </div>
+                    </div>
                         <div class="form-group">
                             <div class="form-group">
                                 <input type="hidden" id="order-id-feedback" name="order_id">
@@ -290,6 +307,23 @@
                 <form method="post" action="{{route('purchase_history.product_feedback')}}" id="refund-order-form">
                     @csrf
                 <div class="modal-body">
+                    <h4>Product Rating</h4>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="c-rating mt-1 mb-1 clearfix d-inline-block">
+                                <input type="radio" id="starP5" name="rating" value="5" required/>
+                                <label class="star" for="starP5" title="Awesome" aria-hidden="true"></label>
+                                <input type="radio" id="starP4" name="rating" value="4" required/>
+                                <label class="star" for="starP4" title="Great" aria-hidden="true"></label>
+                                <input type="radio" id="starP3" name="rating" value="3" required/>
+                                <label class="star" for="starP3" title="Very good" aria-hidden="true"></label>
+                                <input type="radio" id="starP2" name="rating" value="2" required/>
+                                <label class="star" for="starP2" title="Good" aria-hidden="true"></label>
+                                <input type="radio" id="starP1" name="rating" value="1" required/>
+                                <label class="star" for="starP1" title="Bad" aria-hidden="true"></label>
+                            </div>
+                        </div>
+                    </div>
                         <div class="form-group">
                             <div class="form-group">
                                 <input type="hidden" id="order-id-pro-feedback" name="order_id">
@@ -350,7 +384,6 @@
             </div>
         </div>
     </div>
-
 @endsection
 @section('script')
     <script type="text/javascript">

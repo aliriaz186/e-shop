@@ -158,6 +158,7 @@ Route::group(['prefix' =>'seller', 'middleware' => ['seller', 'verified']], func
     Route::post('/shop/apply_for_verification', 'ShopController@verify_form_store')->name('shop.verify.store');
 
     Route::get('/reviews', 'ReviewController@seller_reviews')->name('reviews.seller');
+    Route::get('/ratings', 'ReviewController@sellerRatings')->name('ratings.seller');
 });
 
 Route::group(['middleware' => ['auth']], function(){

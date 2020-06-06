@@ -179,6 +179,7 @@ class PurchaseHistoryController extends Controller
         $feedback = new SellerFeedback();
         $feedback->user_id = \Illuminate\Support\Facades\Auth::user()->id;
         $feedback->order_id = $request->order_id;
+        $feedback->rating = $request->rating;
         $feedback->message = $request->message;
         if($feedback->save()){
             flash(__('successfully'))->success();
@@ -193,6 +194,7 @@ class PurchaseHistoryController extends Controller
         $feedback->user_id = \Illuminate\Support\Facades\Auth::user()->id;
         $feedback->product_id = OrderDetail::where('order_id', $request->order_id)->first()['product_id'];
         $feedback->comment = $request->message;
+        $feedback->rating = $request->rating;
         if($feedback->save()){
             flash(__('successfully'))->success();
             return redirect()->route('purchase_history.index');
