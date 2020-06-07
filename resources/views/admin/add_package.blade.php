@@ -9,7 +9,7 @@
             </div>
         </div>
         <div class="panel-body">
-            <form style="width: 300px" method="post" action="{{route('admin.update_package')}}" enctype="multipart/form-data">
+            <form style="width: 300px" method="post" action="{{route('admin.save_package')}}" enctype="multipart/form-data">
                 @csrf
                 <div>Logo</div>
                 <input style="margin-top: 10px" type="file" name="image" class="form-control">
