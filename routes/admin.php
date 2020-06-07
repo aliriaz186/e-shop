@@ -32,6 +32,12 @@ Route::group(['prefix' =>'admin', 'middleware' => ['auth', 'admin']], function()
     Route::post('/admin/admin_refund_request', 'AdminRequestsController@adminRefundRequest')->name('admin.refund_request');
     Route::post('/admin/admin_cancel', 'AdminRequestsController@adminCancelledOrder')->name('admin.admin_cancel');
     Route::post('/admin/admin_seller_return', 'AdminRequestsController@adminOrderReturn')->name('admin.admin_return');
+    Route::get('/admin_packages', 'ClassifiedPackagesController@viewPackages')->name('admin.packages');
+    Route::get('/add_package', 'ClassifiedPackagesController@viewAddPackage')->name('admin.add_package');
+    Route::post('/save_package', 'ClassifiedPackagesController@store')->name('admin.save_package');
+    Route::get('/edit_package/{id}', 'ClassifiedPackagesController@editPackage')->name('admin.edit_package');
+    Route::post('/package_update', 'ClassifiedPackagesController@update')->name('admin.package_update');
+    Route::get('/delete_package/{id}', 'ClassifiedPackagesController@delete')->name('admin.delete_package');
 
 	Route::get('/products/admin','ProductController@admin_products')->name('products.admin');
 	Route::get('/products/seller','ProductController@seller_products')->name('products.seller');

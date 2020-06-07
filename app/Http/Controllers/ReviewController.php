@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Order;
 use App\OrderDetail;
 use App\SellerFeedback;
 use Illuminate\Http\Request;
@@ -50,6 +51,7 @@ class ReviewController extends Controller
         foreach ($reviewList as $review){
             $sellerId = OrderDetail::where('order_id', $review->order_id)->first()['seller_id'];
             if ($sellerId == \Illuminate\Support\Facades\Auth::user()->id){
+                $review->order_code = Order::where('id', $review->order_id)->first()['code'];
                 array_push($reviews, $review);
             }
         }

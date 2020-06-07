@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\SellerSettings;
 use App\ShippingAddress;
 use Illuminate\Http\Request;
 use Session;
@@ -297,8 +298,12 @@ class HomeController extends Controller
         $shop  = Shop::where('slug', $slug)->first();
         if($shop!=null){
             $seller = Seller::where('user_id', $shop->user_id)->first();
+            $maintenanceMode = false;
+            if (SellerSettings::where('seller_id',  $shop->user_id)->exists()){
+                $maintenanceMode = true;
+            }
             if ($seller->verification_status != 0){
-                return view('frontend.seller_shop', compact('shop'));
+                return view('frontend.seller_shop', compact('shop'))->with(['maintenanceMode' => $maintenanceMode]);
             }
             else{
                 return view('frontend.seller_shop_without_verification', compact('shop', 'seller'));

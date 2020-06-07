@@ -63,6 +63,11 @@
                                 @endif
                             </div>
                             <div class="location alpha-6">{{ $shop->address }}</div>
+                            <div>
+                                @if($maintenanceMode)
+                                   <a href="#" style="font-size: 18px">Seller is on holiday or maintenance mode.</a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

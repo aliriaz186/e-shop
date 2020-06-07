@@ -16,7 +16,7 @@
                             <div class="row align-items-center">
                                 <div class="col-md-6">
                                     <h2 class="heading heading-6 text-capitalize strong-600 mb-0">
-                                        {{__('Product Reviews')}}
+                                        {{__('Seller Reviews')}}
                                     </h2>
                                 </div>
                                 <div class="col-md-6">
@@ -38,7 +38,7 @@
                                 <table class="table table-sm table-responsive-md">
                                     <thead>
                                     <tr>
-                                        <th>#</th>
+                                        <th>{{__('Order')}}</th>
                                         <th>{{__('Customer')}}</th>
                                         <th>{{__('Rating')}}</th>
                                         <th>{{__('Comment')}}</th>
@@ -53,7 +53,7 @@
                                             @if($review != null)
                                                 <tr>
                                                     <td>
-                                                        {{ $key+1 }}
+                                                        <a href="#{{ $value->order_code }}" onclick="show_purchase_history_details({{ $value->order_id }})">{{ $value->order_code }}</a>
                                                     </td>
                                                     <td>{{ \App\User::where('id', $review->user_id)->first()['name'] }} ({{ \App\User::where('id', $review->user_id)->first()['email'] }})</td>
                                                     <td>
@@ -93,5 +93,21 @@
             </div>
         </div>
     </section>
+    <div class="modal fade" id="order_details" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-zoom product-modal" id="modal-size" role="document">
+            <div class="modal-content position-relative">
+                <div class="c-preloader">
+                    <i class="fa fa-spin fa-spinner"></i>
+                </div>
+                <div id="order-details-modal-body">
 
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    $('#order_details').on('hidden.bs.modal', function () {
+        location.reload();
+    })
+</script>
 @endsection

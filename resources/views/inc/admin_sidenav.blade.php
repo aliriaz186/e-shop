@@ -262,6 +262,9 @@
                                 <li class="{{ areActiveRoutes(['customers.index'])}}">
                                     <a class="nav-link" href="{{ route('customers.index') }}">{{__('Customer list')}}</a>
                                 </li>
+                                <li class="{{ areActiveRoutes(['admin.packages'])}}">
+                                    <a class="nav-link" href="{{ route('admin.packages') }}">{{__('Classified Packages')}}</a>
+                                </li>
                             </ul>
                         </li>
                         @endif
